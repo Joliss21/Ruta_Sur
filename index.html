@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RutaSur | Turismo aventura en Pucon</title>
+  <meta name="description" content="Landing page local de RutaSur, agencia ficticia de turismo aventura en Pucon.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Navegacion principal">
+      <a class="logo" href="#inicio" aria-label="RutaSur inicio">RutaSur</a>
+      <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="nav-menu" id="nav-menu">
+        <a href="#inicio">Inicio</a>
+        <a href="#tours">Tours</a>
+        <a href="#experiencia">Experiencia</a>
+        <a href="#faq">FAQ</a>
+        <a href="#politicas">Politicas</a>
+        <a href="#contacto">Contacto</a>
+        <button class="button button-small button-accent open-chat" type="button">Consultar por chat</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+        <p class="eyebrow">Pucón · Lunes a sábado · Salida 9:00</p>
+        <h1>Turismo aventura en Pucón con orientación inteligente</h1>
+        <p class="hero-copy">RutaSur ayuda a elegir tours según tu experiencia, disponibilidad y condiciones del entorno, con cupos controlados y guías especializados.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#tours">Ver tours</a>
+          <button class="button button-secondary open-chat" type="button">Hablar con el asistente</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="Portada.png" alt="Paisaje de turismo aventura en Pucón con lago, montaña y actividades al aire libre">
+      </div>
+    </section>
+
+    <section class="section" id="tours">
+      <div class="section-heading">
+        <p class="eyebrow">Nuestros tours</p>
+        <h2>Actividades guiadas para distintos niveles</h2>
+        <p>Todos los tours operan con cupos máximos por seguridad y validación previa de experiencia cuando corresponde.</p>
+      </div>
+      <div class="tour-grid">
+        <article class="tour-card">
+          <span class="level level-basic">Basico</span>
+          <h3>Trekking</h3>
+          <p>Senderos panoramicos entre bosque nativo, miradores volcanicos y pausas interpretativas.</p>
+          <dl>
+            <div><dt>Nivel minimo</dt><dd>Basico</dd></div>
+            <div><dt>Precio</dt><dd>$15.000</dd></div>
+            <div><dt>Cupo maximo</dt><dd>10</dd></div>
+            <div><dt>Guia</dt><dd>Andres Reyes</dd></div>
+          </dl>
+        </article>
+        <article class="tour-card">
+          <span class="level level-basic">Basico</span>
+          <h3>Ciclismo</h3>
+          <p>Ruta recreativa por caminos escenicos cercanos al lago, con ritmo adaptable al grupo.</p>
+          <dl>
+            <div><dt>Nivel minimo</dt><dd>Basico</dd></div>
+            <div><dt>Precio</dt><dd>$18.000</dd></div>
+            <div><dt>Cupo maximo</dt><dd>8</dd></div>
+            <div><dt>Guia</dt><dd>Andres Reyes</dd></div>
+          </dl>
+        </article>
+        <article class="tour-card">
+          <span class="level level-intermediate">Intermedio</span>
+          <h3>Kayak</h3>
+          <p>Navegacion guiada en aguas tranquilas con foco en tecnica, seguridad y lectura del entorno.</p>
+          <dl>
+            <div><dt>Nivel minimo</dt><dd>Intermedio</dd></div>
+            <div><dt>Precio</dt><dd>$25.000</dd></div>
+            <div><dt>Cupo maximo</dt><dd>6</dd></div>
+            <div><dt>Guia</dt><dd>Valentina Soto</dd></div>
+          </dl>
+        </article>
+        <article class="tour-card">
+          <span class="level level-intermediate">Intermedio</span>
+          <h3>Rafting</h3>
+          <p>Descenso coordinado por tramos de rio seleccionados segun caudal y condiciones del dia.</p>
+          <dl>
+            <div><dt>Nivel minimo</dt><dd>Intermedio</dd></div>
+            <div><dt>Precio</dt><dd>$30.000</dd></div>
+            <div><dt>Cupo maximo</dt><dd>6</dd></div>
+            <div><dt>Guia</dt><dd>Valentina Soto</dd></div>
+          </dl>
+        </article>
+        <article class="tour-card">
+          <span class="level level-advanced">Avanzado</span>
+          <h3>Escalada</h3>
+          <p>Salida tecnica en roca para personas con experiencia previa y manejo basico de equipo.</p>
+          <dl>
+            <div><dt>Nivel minimo</dt><dd>Avanzado</dd></div>
+            <div><dt>Precio</dt><dd>$35.000</dd></div>
+            <div><dt>Cupo maximo</dt><dd>4</dd></div>
+            <div><dt>Guia</dt><dd>Tomas Herrera</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="section split-section" id="experiencia">
+      <div>
+        <p class="eyebrow">¿Que tour es para mi?</p>
+        <h2>Elige segun tu experiencia</h2>
+        <div class="level-list">
+          <p><strong>Basico:</strong> Trekking y Ciclismo, pensados para primeras experiencias al aire libre.</p>
+          <p><strong>Intermedio:</strong> Kayak y Rafting, recomendados para quienes ya han realizado actividad aventura.</p>
+          <p><strong>Avanzado:</strong> Escalada, orientada a personas con experiencia previa y buena condicion fisica.</p>
+        </div>
+      </div>
+      <article class="advisor-card">
+        <h3>Te ayudamos a elegir</h3>
+        <p>Puedes contarle al asistente tu experiencia, la actividad que te interesa y la fecha aproximada. Te orientará según nivel, requisitos y disponibilidad.</p>
+        <ul class="advisor-examples">
+          <li>“Tengo poca experiencia, ¿qué tour me recomiendan?”</li>
+          <li>“Me interesa el kayak, ¿puedo hacerlo?”</li>
+          <li>“¿Qué debo llevar para trekking?”</li>
+        </ul>
+        <button class="button button-primary open-chat" type="button" data-chat-suggestion="Hola, quiero que me orienten para elegir un tour.">Preguntar al asistente</button>
+      </article>
+    </section>
+
+    <section class="section muted-section" id="faq">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+      <div class="faq-grid">
+        <details>
+          <summary>¿Necesito experiencia previa?</summary>
+          <p>Para Trekking y Ciclismo no es necesaria. Kayak, Rafting y Escalada requieren mayor experiencia segun el nivel del tour.</p>
+        </details>
+        <details>
+          <summary>¿Que debo llevar?</summary>
+          <p>Ropa comoda, agua, bloqueador, calzado adecuado y una capa impermeable ligera.</p>
+        </details>
+        <details>
+          <summary>¿Los tours se hacen con lluvia?</summary>
+          <p>Depende de la actividad, el clima y la evaluacion de seguridad realizada por la agencia.</p>
+        </details>
+        <details>
+          <summary>¿Como se reservan los cupos?</summary>
+          <p>Primero se consulta disponibilidad y experiencia. Luego se confirma la reserva con los datos requeridos.</p>
+        </details>
+        <details>
+          <summary>¿Puedo consultar sin registrarme?</summary>
+          <p>Si. Puedes pedir informacion general sin crear registro.</p>
+        </details>
+        <details>
+          <summary>¿Cuando debo registrarme?</summary>
+          <p>Solo cuando quieras reservar un cupo y entregar antecedentes necesarios para la salida.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" id="politicas">
+      <div class="section-heading">
+        <p class="eyebrow">Politicas y seguridad</p>
+        <h2>Operamos con criterios claros</h2>
+      </div>
+      <div class="policy-grid">
+        <article>
+          <h3>Experiencia validada</h3>
+          <p>Antes de reservar se revisa si el tour coincide con la experiencia declarada por la persona.</p>
+        </article>
+        <article>
+          <h3>Cupos controlados</h3>
+          <p>Cada actividad mantiene un maximo de participantes para cuidar la seguridad del grupo.</p>
+        </article>
+        <article>
+          <h3>Clima revisado</h3>
+          <p>Se recomienda revisar condiciones climaticas y atender las indicaciones de la agencia.</p>
+        </article>
+        <article>
+          <h3>Cambios evaluados</h3>
+          <p>Cancelaciones o modificaciones quedan sujetas a evaluacion operativa y de seguridad.</p>
+        </article>
+        <article>
+          <h3>Registro para reservar</h3>
+          <p>El registro es obligatorio solo cuando se confirma una reserva, no para consultar.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section muted-section" id="anexos">
+      <div class="section-heading">
+        <p class="eyebrow">Anexos</p>
+        <h2>Informacion util para futuras reservas</h2>
+      </div>
+      <div class="resource-grid">
+        <a href="guia-preparacion-tours.html" aria-label="Guia de preparacion para tours" data-resource-label="Ver guía">Guia de preparacion para tours</a>
+        <a href="recomendaciones-seguridad.html" aria-label="Recomendaciones de seguridad" data-resource-label="Ver recomendaciones">Recomendaciones de seguridad</a>
+        <a href="politicas-reserva.html" aria-label="Politicas de reserva" data-resource-label="Ver políticas">Politicas de reserva</a>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contacto">
+      <div class="contact-primary">
+        <p class="eyebrow">Contacto</p>
+        <h2>Gestiona tu reserva con el asistente RutaSur</h2>
+        <p>El asistente puede ayudarte a elegir un tour, revisar requisitos, orientar según tu experiencia y comenzar el proceso de reserva. Usa el contacto directo solo si necesitas resolver una situación especial.</p>
+        <button class="button button-primary open-chat" type="button" data-chat-suggestion="Hola, quiero consultar por una reserva.">Hablar con el asistente</button>
+      </div>
+      <address class="contact-card">
+        <strong>Otros canales de contacto</strong>
+        <p>Para dudas administrativas, cambios excepcionales o consultas que no puedas resolver por el asistente.</p>
+        <span>Pucón, Región de La Araucanía</span>
+        <a href="mailto:contacto@rutasur.cl">contacto@rutasur.cl</a>
+        <a href="tel:+56912345678">+56 9 1234 5678</a>
+      </address>
+    </section>
+  </main>
+
+  <button class="chat-fab open-chat" type="button" aria-label="Abrir Chat RutaSur">Chat RutaSur</button>
+
+  <aside class="chat-widget" id="chat-widget" aria-label="Chat visual RutaSur" aria-hidden="true">
+    <div class="chat-header">
+      <div>
+        <strong>Asistente RutaSur</strong>
+      </div>
+      <button class="chat-close" type="button" aria-label="Cerrar chat">×</button>
+    </div>
+    <div class="chat-messages" id="chat-messages" aria-live="polite">
+      <p class="message assistant">¡Hola! Soy el asistente de RutaSur. Puedo ayudarte a conocer nuestros tours, revisar precios, resolver dudas sobre requisitos y orientarte si quieres iniciar una reserva.</p>
+    </div>
+    <form class="chat-form" id="chat-form">
+      <input id="chat-input" type="text" placeholder="Escribe tu consulta..." autocomplete="off" aria-label="Mensaje para el asistente">
+      <button type="submit">Enviar</button>
+    </form>
+  </aside>
+
+  <script src="script.js?v=5"></script>
+</body>
+</html>
