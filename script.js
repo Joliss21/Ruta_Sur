@@ -1,11 +1,23 @@
+const N8N_WEBHOOK_URL = "PEGAR_AQUI_URL_WEBHOOK";
+const SESSION_STORAGE_KEY = "rutasur_session_id";
+
+let sessionId = localStorage.getItem(SESSION_STORAGE_KEY);
+
+if (!sessionId) {
+  sessionId = crypto.randomUUID();
+  localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+}
+
 const chatWidget = document.querySelector("#chat-widget");
 const chatMessages = document.querySelector("#chat-messages");
 const chatForm = document.querySelector("#chat-form");
 const chatInput = document.querySelector("#chat-input");
+const chatSubmitButton = chatForm.querySelector('button[type="submit"]');
 const chatClose = document.querySelector(".chat-close");
 const openChatButtons = document.querySelectorAll(".open-chat");
 const navToggle = document.querySelector(".nav-toggle");
 const navMenu = document.querySelector("#nav-menu");
+let isSendingMessage = false;
 
 function openChat(event) {
   const suggestion = event?.currentTarget?.dataset?.chatSuggestion;
@@ -34,6 +46,7 @@ function appendMessage(text, type) {
   message.textContent = text;
   chatMessages.appendChild(message);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  return message;
 }
 
 openChatButtons.forEach((button) => {
@@ -42,23 +55,65 @@ openChatButtons.forEach((button) => {
 
 chatClose.addEventListener("click", closeChat);
 
-chatForm.addEventListener("submit", (event) => {
+chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (isSendingMessage) {
+    return;
+  }
 
   const text = chatInput.value.trim();
   if (!text) {
     return;
   }
 
+  isSendingMessage = true;
   appendMessage(text, "user");
   chatInput.value = "";
+  chatSubmitButton.disabled = true;
+  const waitingMessage = appendMessage("RutaSur está escribiendo…", "assistant");
+  const requestController = new AbortController();
+  const requestTimeout = window.setTimeout(() => requestController.abort(), 30000);
 
-  window.setTimeout(() => {
+  try {
+    const response = await fetch(N8N_WEBHOOK_URL, {
+      method: "POST",
+      signal: requestController.signal,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: text,
+        sessionId: sessionId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`El webhook respondió con estado ${response.status}`);
+    }
+
+    const data = await response.json();
+    const respuesta =
+      data.respuesta ||
+      data.output ||
+      data.message ||
+      "No fue posible obtener una respuesta del asistente.";
+
+    waitingMessage.remove();
+    appendMessage(respuesta, "assistant");
+  } catch (error) {
+    waitingMessage.remove();
     appendMessage(
-      "Gracias por tu consulta. En la proxima version conectare este chat al agente de RutaSur en n8n.",
+      "No pude conectarme con el asistente de RutaSur. Intenta nuevamente en unos momentos.",
       "assistant"
     );
-  }, 450);
+    console.error("Error al conectar con el webhook de n8n:", error);
+  } finally {
+    window.clearTimeout(requestTimeout);
+    isSendingMessage = false;
+    chatSubmitButton.disabled = false;
+    chatInput.focus();
+  }
 });
 
 navToggle.addEventListener("click", () => {
