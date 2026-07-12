@@ -1,10 +1,12 @@
-const N8N_WEBHOOK_URL = "PEGAR_AQUI_URL_WEBHOOK";
+const N8N_WEBHOOK_URL = "https://n8n.claria.cl/webhook/rutasur-chat";
 const SESSION_STORAGE_KEY = "rutasur_session_id";
 
 let sessionId = localStorage.getItem(SESSION_STORAGE_KEY);
 
 if (!sessionId) {
-  sessionId = crypto.randomUUID();
+  sessionId = crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
 }
 
@@ -70,6 +72,7 @@ chatForm.addEventListener("submit", async (event) => {
   isSendingMessage = true;
   appendMessage(text, "user");
   chatInput.value = "";
+  chatInput.disabled = true;
   chatSubmitButton.disabled = true;
   const waitingMessage = appendMessage("RutaSur está escribiendo…", "assistant");
   const requestController = new AbortController();
@@ -93,11 +96,10 @@ chatForm.addEventListener("submit", async (event) => {
     }
 
     const data = await response.json();
-    const respuesta =
-      data.respuesta ||
-      data.output ||
-      data.message ||
-      "No fue posible obtener una respuesta del asistente.";
+    const responseData = Array.isArray(data) ? data[0] : data;
+    const respuesta = [responseData?.respuesta, responseData?.output, responseData?.message].find(
+      (value) => typeof value === "string" && value.trim()
+    ) || "No fue posible obtener una respuesta del asistente.";
 
     waitingMessage.remove();
     appendMessage(respuesta, "assistant");
@@ -111,6 +113,7 @@ chatForm.addEventListener("submit", async (event) => {
   } finally {
     window.clearTimeout(requestTimeout);
     isSendingMessage = false;
+    chatInput.disabled = false;
     chatSubmitButton.disabled = false;
     chatInput.focus();
   }
