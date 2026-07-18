@@ -14,12 +14,14 @@ const chatWidget = document.querySelector("#chat-widget");
 const chatMessages = document.querySelector("#chat-messages");
 const chatForm = document.querySelector("#chat-form");
 const chatInput = document.querySelector("#chat-input");
-const chatSubmitButton = chatForm.querySelector('button[type="submit"]');
 const chatClose = document.querySelector(".chat-close");
 const openChatButtons = document.querySelectorAll(".open-chat");
 const navToggle = document.querySelector(".nav-toggle");
 const navMenu = document.querySelector("#nav-menu");
-let isSendingMessage = false;
+let waitingMessage = null;
+let pendingRequestCount = 0;
+let latestRequestId = 0;
+let errorShownForCurrentBatch = false;
 
 function openChat(event) {
   const suggestion = event?.currentTarget?.dataset?.chatSuggestion;
@@ -51,6 +53,19 @@ function appendMessage(text, type) {
   return message;
 }
 
+function showWaitingMessage() {
+  if (!waitingMessage) {
+    waitingMessage = appendMessage("RutaSur está escribiendo…", "assistant");
+  }
+}
+
+function removeWaitingMessage() {
+  if (waitingMessage) {
+    waitingMessage.remove();
+    waitingMessage = null;
+  }
+}
+
 openChatButtons.forEach((button) => {
   button.addEventListener("click", openChat);
 });
@@ -60,23 +75,24 @@ chatClose.addEventListener("click", closeChat);
 chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  if (isSendingMessage) {
-    return;
-  }
-
   const text = chatInput.value.trim();
   if (!text) {
     return;
   }
 
-  isSendingMessage = true;
+  if (pendingRequestCount === 0) {
+    errorShownForCurrentBatch = false;
+  }
+
+  const requestId = ++latestRequestId;
+  pendingRequestCount += 1;
   appendMessage(text, "user");
   chatInput.value = "";
-  chatInput.disabled = true;
-  chatSubmitButton.disabled = true;
-  const waitingMessage = appendMessage("RutaSur está escribiendo…", "assistant");
+  chatInput.focus();
+  showWaitingMessage();
+
   const requestController = new AbortController();
-  const requestTimeout = window.setTimeout(() => requestController.abort(), 30000);
+  const requestTimeout = window.setTimeout(() => requestController.abort(), 60000);
 
   try {
     const response = await fetch(N8N_WEBHOOK_URL, {
@@ -97,25 +113,40 @@ chatForm.addEventListener("submit", async (event) => {
 
     const data = await response.json();
     const responseData = Array.isArray(data) ? data[0] : data;
+
+    if (
+      responseData?.mostrar === false ||
+      responseData?.tipo_resultado === "mensaje_agrupado"
+    ) {
+      return;
+    }
+
     const respuesta = [responseData?.respuesta, responseData?.output, responseData?.message].find(
       (value) => typeof value === "string" && value.trim()
     ) || "No fue posible obtener una respuesta del asistente.";
 
-    waitingMessage.remove();
+    removeWaitingMessage();
     appendMessage(respuesta, "assistant");
   } catch (error) {
-    waitingMessage.remove();
-    appendMessage(
-      "No pude conectarme con el asistente de RutaSur. Intenta nuevamente en unos momentos.",
-      "assistant"
-    );
     console.error("Error al conectar con el webhook de n8n:", error);
+
+    if (requestId === latestRequestId && !errorShownForCurrentBatch) {
+      errorShownForCurrentBatch = true;
+      removeWaitingMessage();
+      appendMessage(
+        "No pude conectarme con el asistente de RutaSur. Intenta nuevamente en unos momentos.",
+        "assistant"
+      );
+    }
   } finally {
     window.clearTimeout(requestTimeout);
-    isSendingMessage = false;
-    chatInput.disabled = false;
-    chatSubmitButton.disabled = false;
-    chatInput.focus();
+    pendingRequestCount = Math.max(0, pendingRequestCount - 1);
+
+    if (pendingRequestCount === 0) {
+      removeWaitingMessage();
+    } else {
+      showWaitingMessage();
+    }
   }
 });
 
