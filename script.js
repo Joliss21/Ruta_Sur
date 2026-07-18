@@ -44,10 +44,129 @@ function closeChat() {
   chatWidget.setAttribute("aria-hidden", "true");
 }
 
+function appendLinkedText(container, text) {
+  const urlPattern = /https?:\/\/[^\s]+/gi;
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(urlPattern)) {
+    container.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+
+    try {
+      const url = new URL(match[0]);
+
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        const link = document.createElement("a");
+        link.href = match[0];
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = match[0];
+        container.appendChild(link);
+      } else {
+        container.appendChild(document.createTextNode(match[0]));
+      }
+    } catch {
+      container.appendChild(document.createTextNode(match[0]));
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  container.appendChild(document.createTextNode(text.slice(lastIndex)));
+}
+
+function appendInlineContent(container, text) {
+  const boldPattern = /\*\*([^*\n]+)\*\*/g;
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(boldPattern)) {
+    appendLinkedText(container, text.slice(lastIndex, match.index));
+
+    const strong = document.createElement("strong");
+    appendLinkedText(strong, match[1]);
+    container.appendChild(strong);
+    lastIndex = match.index + match[0].length;
+  }
+
+  appendLinkedText(container, text.slice(lastIndex));
+}
+
+function renderAssistantContent(container, text) {
+  const normalizedText = String(text ?? "")
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n?/g, "\n")
+    .replace(/([^\n])\s+\*\s+(?=\*\*[^*\n]+:\*\*)/g, "$1\n* ")
+    .trim();
+  const lines = normalizedText.split("\n");
+  let paragraphLines = [];
+  let activeList = null;
+
+  function flushParagraph() {
+    if (paragraphLines.length === 0) {
+      return;
+    }
+
+    const paragraph = document.createElement("p");
+
+    paragraphLines.forEach((line, index) => {
+      if (index > 0) {
+        paragraph.appendChild(document.createElement("br"));
+      }
+
+      appendInlineContent(paragraph, line);
+    });
+
+    container.appendChild(paragraph);
+    paragraphLines = [];
+  }
+
+  function closeList() {
+    activeList = null;
+  }
+
+  for (const line of lines) {
+    const bulletMatch = line.match(/^\s*[-*•]\s+(.+)$/);
+    const numberedMatch = line.match(/^\s*\d+\.\s+(.+)$/);
+    const listMatch = bulletMatch || numberedMatch;
+
+    if (listMatch) {
+      flushParagraph();
+      const listType = bulletMatch ? "ul" : "ol";
+
+      if (!activeList || activeList.tagName.toLowerCase() !== listType) {
+        activeList = document.createElement(listType);
+        container.appendChild(activeList);
+      }
+
+      const item = document.createElement("li");
+      appendInlineContent(item, listMatch[1]);
+      activeList.appendChild(item);
+      continue;
+    }
+
+    closeList();
+
+    if (!line.trim()) {
+      flushParagraph();
+      continue;
+    }
+
+    paragraphLines.push(line);
+  }
+
+  flushParagraph();
+}
+
 function appendMessage(text, type) {
-  const message = document.createElement("p");
+  const shouldFormat = type === "assistant" && text !== "RutaSur está escribiendo…";
+  const message = document.createElement(shouldFormat ? "div" : "p");
   message.className = `message ${type}`;
-  message.textContent = text;
+
+  if (shouldFormat) {
+    renderAssistantContent(message, text);
+  } else {
+    message.textContent = text;
+  }
+
   chatMessages.appendChild(message);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   return message;
